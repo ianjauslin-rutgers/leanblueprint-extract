@@ -38,20 +38,30 @@ theorem two_x_positive (x:ℝ) (hpos: 0<x) : 0<2*x := by
 Copying these examples to a file `test.lean`, one can extract the blueprint by
 running
 ```
-extract_blueprint `test.lean` > outfile.tex
+extract_blueprint test.lean > outfile.tex
 ```
 In addition, the blueprint can be stripped from the file with
 ```
-extract_blueprint -L `test.lean` > stripped.lean
+extract_blueprint -L test.lean > stripped.lean
 ```
+
+One can specify multiple input files, in which case the blueprint is extracted
+from each file. By default, the output is a concatenation of all blueprints to
+stdout. Alternatively, one can specify a directory with the `-O` argument, in
+which case the blueprint for each input file will be written in its own file.
+For example:
+```
+extract_blueprint -O blueprint test1.lean test2.lean
+```
+will write the blueprint to `blueprint/test1.tex` and `blueprint/test2.tex`.
 
 # Usage
 ```
-extract_blueprint [-B|-L] [-s start_delimiter] [-e end_delimiter] [-l line_delimiter] [-o output] <input_file.lean>
+extract_blueprint [-B|-L] [-s start_delimiter] [-e end_delimiter] [-l line_delimiter] [-O output_dir] <input_file1.lean> ...
 ```
 
-* `input_file.lean`: mandatory argument that specifies the file from which
-  the blueprint is to be extracted.
+* `input_file1.lean` `...`: one or more files from which the blueprint is to be
+  extracted.
 
 * `-s <start_delimiter>` or `--start_delimiter <start_delimiter>`
   (default: `/\-%%`): a regular expression that specifies the opening tag that
@@ -65,8 +75,11 @@ extract_blueprint [-B|-L] [-s start_delimiter] [-e end_delimiter] [-l line_delim
   (default: `\-\-%%`): a regular expression that specifies the prefix for single
   line blueprint code.
 
-* `-o <output>` or `--output <output>` (default: `stdout`): specify a file on
-  which to write the output.
+* `-O <output_dir>` or `--outdir <output_dir>`: specify a directory to which
+  the output is to be written. The tool will generate one output file per input
+  file. If run with the `-B` option, the `.lean` extension is replaced with
+  `.tex`. Otherwise, the output file name is the same as the input file name.
+  `<output_dir>` must exist.
 
 * `-B` or `--blueprint`: print the extracted blueprint file (this is the
   default).
@@ -95,14 +108,21 @@ To extract the blueprint from a lean file `test.lean` and write it to
 ```
 extract_blueprint test.lean > blueprint.tex
 ```
-or
-```
-extract_blueprint -o blueprint.tex test.lean
-```
 
 To strip the blueprint out of the lean file, use
 ```
 extract_blueprint -L test.lean > test_stripped.lean
+```
+
+To extract the blueprints out of all of the lean files in a project and write
+them to `blueprint`:
+```
+extract_blueprint -O blueprint ProjectName/*.lean
+```
+where `ProjectName` should be replaced with the name of your project.
+Alternatively, you can scrape all lean files in subdirectories:
+```
+extract_blueprint -O blueprint **/*.lean
 ```
 
 To change the opening tag to `/-blue`:
