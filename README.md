@@ -54,15 +54,15 @@ extract_blueprint [-B|-L] [-s start_delimiter] [-e end_delimiter] [-l line_delim
   the blueprint is to be extracted.
 
 * `-s <start_delimiter>` or `--start_delimiter <start_delimiter>`
-  (default '/\-%%'): a regular expression that specifies the opening tag that
+  (default: `/\-%%`): a regular expression that specifies the opening tag that
   encloses blueprint code.
 
 * `-e <end_delimiter>` or `--end_delimiter <end_delimiter>`
-  (default '/\-%%'): a regular expression that specifies the closing tag that
+  (default: `/\-%%`): a regular expression that specifies the closing tag that
   encloses blueprint code.
 
 * `-l <line_delimiter>` or `--line_delimiter <line_delimiter>`
-  (default '\-\-%%'): a regular expression that specifies the prefix for single
+  (default: `\-\-%%`): a regular expression that specifies the prefix for single
   line blueprint code.
 
 * `-o <output>` or `--output <output>` (default: `stdout`): specify a file on
