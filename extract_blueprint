@@ -165,21 +165,7 @@ def read_cli():
 
 # name of the output file: strip '.lean' and add '.tex'
 def output_name(input_file):
-    # pathological case
-    if input_file=="":
-        return ""
-
-    # strip directory
-    split=input_file.split('/')
-    filename=split[len(split)-1]
-
-    # check extension
-    extension=".lean"
-    if len(filename)>=len(extension) and filename[len(filename)-len(extension):]==".lean":
-        return filename[:len(filename)-len(extension)]+".tex"
-    else:
-        return filename+".tex"
-
+    return re.sub(r'\.lean$', '', input_file)+".tex"
 
 def extract_blueprint(text):
     # dictionary of extracted text
