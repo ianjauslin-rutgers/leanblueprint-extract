@@ -26,14 +26,16 @@ start_delimiter=r"/\-%%"
 end_delimiter=r"%%\-/"
 line_delimiter=r"\-\-%%"
 show="blueprint"
+overwrite=False
 
 def print_help():
-    print("Usage: extract_blueprint [-B|-L] [-s start_delimiter] [-e end_delimiter] [-l line_delimiter] [-O outdir] <input_file1.lean> ...\n\
+    print("Usage: extract_blueprint [-B|-L] [-f] [-s start_delimiter] [-e end_delimiter] [-l line_delimiter] [-O outdir] <input_file1.lean> ...\n\
 \n\
   A tool to extract the blueprint from one ore more lean files specified with the arguments <input_file1.lean> ...\n\
 \n\
   -B, --blueprint: print the blueprint, extracted from the input file (default)\n\
   -L, --lean: print the lean code from which the blueprint has been stripped\n\
+  -f, --force: by default, the tool does not overwrite input files; pass '-f' to overwrite\n\
   -s, --start_delimiter <start_delimiter>: a regular expression specifying the tag that opens a blueprint exntry (default: '/\\-%%')\n\
   -e, --end_delimiter <end_delimiter>: a regular expression specifying the tag that closes a blueprint exntry (default: '%%\\-/')\n\
   -l, --line_delimiter <line_delimiter>: a regular expression specifying a single line blueprint entry (default: '\\-\\-%%')\n\
@@ -63,9 +65,14 @@ def main():
         # output file
         if outdir_str!="":
             if show=="blueprint":
-                outfile_str=outdir_str+output_name(infile_str)
+                outfile_str=outdir_str+output_name(os.path.basename(infile_str))
             elif show=="lean":
-                outfile_str=outdir_str+infile_str
+                outfile_str=outdir_str+os.path.basename(infile_str)
+            # do not write if outfile is an input file
+            if overwrite==False:
+                if os.path.abspath(outfile_str) in infiles:
+                    print("Abort: output file'"+outfile_str+"' is also an input file. Use '-f' to overwrite.", file=sys.stderr)
+                    exit(-1)
             outfile=open(outfile_str,'w')
         else:
             outfile=sys.stdout
@@ -84,6 +91,7 @@ def read_cli():
     global end_delimiter
     global line_delimiter
     global show
+    global overwrite
 
     flag=""
 
@@ -103,6 +111,8 @@ def read_cli():
             show="blueprint"
         elif arg=="--lean":
             show="lean"
+        elif arg=="--force":
+            overwrite=True
 
         elif arg[0]=='-':
             for letter in arg[1:]:
@@ -118,6 +128,8 @@ def read_cli():
                     show="blueprint"
                 elif letter=='L':
                     show="lean"
+                elif letter=='f':
+                    overwrite=True
 
         else:
             if flag=="start_delimiter":
@@ -147,7 +159,8 @@ def read_cli():
                 if not os.path.isfile(arg):
                     print("error: '"+arg+"': no such file", file=sys.stderr)
                     exit(-1)
-                infiles.append(arg)
+                # convert input files to full paths, so one can check the overwrite flag
+                infiles.append(os.path.abspath(arg))
 
 
 # name of the output file: strip '.lean' and add '.tex'

@@ -57,7 +57,7 @@ will write the blueprint to `blueprint/test1.tex` and `blueprint/test2.tex`.
 
 # Usage
 ```
-extract_blueprint [-B|-L] [-s start_delimiter] [-e end_delimiter] [-l line_delimiter] [-O output_dir] <input_file1.lean> ...
+extract_blueprint [-B|-L] [-f] [-s start_delimiter] [-e end_delimiter] [-l line_delimiter] [-O output_dir] <input_file1.lean> ...
 ```
 
 * `input_file1.lean` `...`: one or more files from which the blueprint is to be
@@ -86,6 +86,9 @@ extract_blueprint [-B|-L] [-s start_delimiter] [-e end_delimiter] [-l line_delim
 
 * `-L` or `--lean`: print the lean code in which the blueprint has been
   removed.
+
+* `-f` or `--force`: by default, if an output file would overwrite an input
+  file, the program exits. Use `-f` to enable overwriting input files.
 
 
 # Customizing the opening and closing tags
