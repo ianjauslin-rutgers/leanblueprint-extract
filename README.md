@@ -58,7 +58,7 @@ extract_blueprint [-B|-L] [-s start_delimiter] [-e end_delimiter] [-l line_delim
   encloses blueprint code.
 
 * `-e <end_delimiter>` or `--end_delimiter <end_delimiter>`
-  (default: `/\-%%`): a regular expression that specifies the closing tag that
+  (default: `\-%%/`): a regular expression that specifies the closing tag that
   encloses blueprint code.
 
 * `-l <line_delimiter>` or `--line_delimiter <line_delimiter>`
