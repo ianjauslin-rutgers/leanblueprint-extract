@@ -62,7 +62,11 @@ def main():
 
         # output file
         if outdir_str!="":
-            outfile=open(outdir_str+output_name(infile_str),'w')
+            if show=="blueprint":
+                outfile_str=outdir_str+output_name(infile_str)
+            elif show=="lean":
+                outfile_str=outdir_str+infile_str
+            outfile=open(outfile_str,'w')
         else:
             outfile=sys.stdout
 
