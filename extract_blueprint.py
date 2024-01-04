@@ -14,13 +14,14 @@
 ## along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import sys
+import re
 
 # defaults
 infile_str=""
 outfile_str=""
-start_delimiter="/-%%"
-end_delimiter="%%-/"
-line_delimiter="--%%"
+start_delimiter=r"/\-%%"
+end_delimiter=r"%%\-/"
+line_delimiter=r"\-\-%%"
 show="blueprint"
 
 def print_help():
@@ -30,8 +31,9 @@ def print_help():
 \n\
   -B, --blueprint: print the blueprint, extracted from the input file (default)\n\
   -L, --lean: print the lean code from which the blueprint has been stripped\n\
-  -s, --start_delimiter <start_delimiter> and -e, --end_delimiter <end_delimiter>: the blueprint code is written in between <start_delimiter> and <end_delimiter> symbols (default: '/-%%' and '%%-/')\n\
-  -l, --line_delimiter <line_delimiter>: single line blueprint code (default '--%%')\n\
+  -s, --start_delimiter <start_delimiter>: a regular expression specifying the tag that opens a blueprint exntry (default: '/\\-%%')\n\
+  -e, --end_delimiter <end_delimiter>: a regular expression specifying the tag that closes a blueprint exntry (default: '%%\\-/')\n\
+  -l, --line_delimiter <line_delimiter>: a regular expression specifying a single line blueprint entry (default: '\\-\\-%%')\n\
   -o, --output <output>: write output to file <output> (default: stdout)\n\
 \n\
 ")
@@ -130,54 +132,21 @@ def extract_blueprint(text):
     # dictionary of extracted text
     extracted=dict()
 
-    # text without blueprint
-    text_without=""
-
     # extract text between delimiters
-    pointer=0
-    # find next entry
-    while pointer<len(text):
-        # find start delimiter
-        start=text.find(start_delimiter,pointer)
-        # at end of text
-        if start<0:
-            break
-
-        # find matching delimiter
-        end=text.find(end_delimiter,start)
-
-        # extract text to dict with position as key
-        extracted[start]=text[start+len(start_delimiter):end]
-
-        # text without blueprint
-        text_without=text_without+text[pointer:start]
-
-        # set pointer
-        pointer=end+len(end_delimiter)
-
+    matches=re.finditer(start_delimiter+r'(.*?)'+end_delimiter, text, flags=re.DOTALL)
+    for match in matches:
+        # add to extracted dict
+        extracted[match.start(1)]=match.group(1)
 
     # extract single lines
-    pointer=0
-    # find next entry
-    while pointer<len(text):
-        # find start delimiter
-        start=text.find(line_delimiter,pointer)
-        # at end of text
-        if start<0:
-            break
+    matches=re.finditer(r'^'+line_delimiter+r'(.*)$', text, flags=re.MULTILINE)
+    for match in matches:
+        # add to extracted dict
+        extracted[match.start(1)]=match.group(1)
 
-        # end of line
-        end=text.find('\n',start)
-
-        # extract text to dict with position as key
-        extracted[start]=text[start+len(line_delimiter):end]
-
-        # text without blueprint
-        text_without=text_without+text[pointer:start]
-
-        # set pointer
-        pointer=end+1
-
+    # text without blueprint
+    text_without=re.sub(start_delimiter+r'.*?'+end_delimiter,'', text, flags=re.DOTALL)
+    text_without=re.sub(r'^'+line_delimiter+r'.*$','', text_without, flags=re.MULTILINE)
 
     # sort extracted lines
     extracted=sorted(extracted.items())
