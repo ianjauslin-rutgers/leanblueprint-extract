@@ -192,7 +192,7 @@ def extract_blueprint(text):
     # combine entries
     out=""
     for item in extracted:
-        out=out+item[1]+"\n"
+        out=out+item[1]+"\n\n"
 
     # return the blueprint and the lean file without the blueprint
     return (out,text_without)
