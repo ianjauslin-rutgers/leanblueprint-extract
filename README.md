@@ -34,6 +34,10 @@ theorem two_x_positive (x:ℝ) (hpos: 0<x) : 0<2*x := by
   simp only [gt_iff_lt, zero_lt_two, zero_lt_mul_left]
   exact hpos
 ```
+(Note that, when using the single-line code, extra newlines are added. If one
+is in a math environment, this can break the LaTeX compilation process. To
+avoid this, use `%nobreak%`, as explained below in section
+[nobreak](#nobreak).)
 
 Copying these examples to a file `test.lean`, one can extract the blueprint by
 running
@@ -90,6 +94,40 @@ extract_blueprint [-B|-L] [-f] [-s start_delimiter] [-e end_delimiter] [-l line_
 * `-f` or `--force`: by default, if an output file would overwrite an input
   file, the program exits. Use `-f` to enable overwriting input files.
 
+# nobreak
+The tool automatically adds blank lines in between blueprint blocks, which is a more natural way to parse paragraphs. Howver, this can cause issues inside math modes: LaTeX does not allow blank lines in math mode. To prevent this, one can use the %nobreak% tag, which will prevent the tool from adding new lines at that location.
+
+For example, to typeset
+```
+\begin{equation}
+\psi=3,
+\phi=4
+\end{equation}
+```
+if one were to use
+```
+--%%\begin{equation}
+--%%\psi=3,
+--%%\phi=4
+--%%\end{equation}
+```
+then the output would be
+```
+\begin{equation}
+
+\psi=3,
+
+\phi=4
+
+\end{equation}
+```
+and would fail to compile. Instead, use
+```
+--%%\begin{equation}%nobreak%
+--%%\psi=3,%nobreak%
+--%%\phi=4%nobreak%
+--%%\end{equation}
+```
 
 # Customizing the opening and closing tags
 The opening and closing tags can be specified on the command line using the
