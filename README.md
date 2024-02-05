@@ -1,5 +1,5 @@
 # Quick start
-The object of this tool is to extract
+`extract_blueprint` is a tool to extract
 [lean blueprint](https://github.com/PatrickMassot/leanblueprint/)
 code from a Lean file. This allows one to embed the blueprint directly into the
 lean code.
@@ -26,8 +26,8 @@ theorem two_x_positive (x:ℝ) (hpos: 0<x) : 0<2*x := by
 The opening and closing tags are set to `/-%%` and `%%-/` by default, but can
 be customized on the command line.
 
-In addition, the tool supports single-line blueprint code using the `--%%`
-prefix: for example,
+In addition, `extract_blueprint` supports single-line blueprint code using the
+`--%%` prefix: for example,
 ```
 theorem two_x_positive (x:ℝ) (hpos: 0<x) : 0<2*x := by
 --%%\begin{proof} Multiplying both sides by $2$, which is $>0$, we find that $2x>0$. \end{proof}
@@ -80,10 +80,10 @@ extract_blueprint [-B|-L] [-f] [-s start_delimiter] [-e end_delimiter] [-l line_
   line blueprint code.
 
 * `-O <output_dir>` or `--outdir <output_dir>`: specify a directory to which
-  the output is to be written. The tool will generate one output file per input
-  file. If run with the `-B` option, the `.lean` extension is replaced with
-  `.tex`. Otherwise, the output file name is the same as the input file name.
-  `<output_dir>` must exist.
+  the output is to be written. `extract_blueprint` will generate one output
+  file per input file. If run with the `-B` option, the `.lean` extension is
+  replaced with `.tex`. Otherwise, the output file name is the same as the
+  input file name.  `<output_dir>` must exist.
 
 * `-B` or `--blueprint`: print the extracted blueprint file (this is the
   default).
@@ -95,7 +95,11 @@ extract_blueprint [-B|-L] [-f] [-s start_delimiter] [-e end_delimiter] [-l line_
   file, the program exits. Use `-f` to enable overwriting input files.
 
 # nobreak
-The tool automatically adds blank lines in between blueprint blocks, which is a more natural way to parse paragraphs. Howver, this can cause issues inside math modes: LaTeX does not allow blank lines in math mode. To prevent this, one can use the %nobreak% tag, which will prevent the tool from adding new lines at that location.
+`extract_blueprint` automatically adds blank lines in between blueprint blocks,
+which is a more natural way to parse paragraphs. However, this can cause issues
+inside math modes: LaTeX does not allow blank lines in math mode. To prevent
+this, one can use the %nobreak% tag, which will prevent `extract_blueprint`
+from adding new lines at that location.
 
 For example, to typeset
 ```
@@ -178,8 +182,8 @@ extract_blueprint -l '\-\-%% *' test.lean > blueprint.tex
 ```
 
 # License
-This tool is released under the GPLv3 license or later. A copy of the license
-is included.
+`extract_blueprint` is released under the GPLv3 license or later. A copy of the
+license is included.
 
 # Authors
-This tool was written by Ian Jauslin and Alex Kontorovich
+`extract_blueprint` was written by Ian Jauslin and Alex Kontorovich
